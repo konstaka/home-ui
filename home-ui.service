@@ -1,0 +1,15 @@
+[Unit]
+Description=Home UI
+After=network.target
+StartLimitIntervalSec=1
+
+[Service]
+Type=simple
+Restart=always
+RestartSec=1
+User=home
+WorkingDirectory=/home/home/home-ui
+ExecStart=/usr/bin/env python3 main.py
+
+[Install]
+WantedBy=multi-user.target
