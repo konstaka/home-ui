@@ -34,6 +34,7 @@ def lights_off():
   print(res.text)
 
 window.attributes('-fullscreen', True)
+window.config(cursor="none")
 window.title("Home UI")
 window.geometry("480x320")
 
