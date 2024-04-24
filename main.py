@@ -1,10 +1,6 @@
 from tkinter import *
 import tkinter.font as tkFont
-import os
-from requests import post
-from dotenv import load_dotenv
-
-load_dotenv()
+from services.light import *
 
 if os.environ.get('DISPLAY','') == '':
     print('no display found. Using :0.0')
@@ -14,31 +10,83 @@ window = Tk()
 
 font = tkFont.Font(family="Tahoma", size=18, weight=tkFont.BOLD, slant=tkFont.ITALIC)
 
-host = "http://homeassistant.local:8123/api"
-token = os.environ.get("HASS_TOKEN")
-headers = {
-    "Authorization": "Bearer {token}".format(token=token),
-    "Content-Type": "application/json",
-}
-
-area_ids = ["living_room", "kitchen", "bedroom", "hallway"]
-
-def lights_on():
-  print("Lights on")
-  res = post("{host}/services/light/turn_on".format(host=host), headers=headers, json={"area_id": area_ids})
-  print(res.text)
-
-def lights_off():
-  print("Lights off")
-  res = post("{host}/services/light/turn_off".format(host=host), headers=headers, json={"area_id": area_ids})
-  print(res.text)
-
 window.attributes('-fullscreen', True)
 window.config(cursor="none")
 window.title("Home UI")
 window.geometry("480x320")
 
-Button(window, text="Lights on", command=lights_on, font=font, padx=30, pady=30).pack()
-Button(window, text="Lights off", command=lights_off, font=font, padx=30, pady=30).pack()
+states = {
+  "light.living_room": "off", 
+  "light.kitchen": "off", 
+  "light.bedroom": "off", 
+  "light.hallway": "off"
+}
+
+local_states = {}
+
+def clear_local(entity_id):
+  local_states[entity_id] = None
+
+def resolve_state(entity_id):
+  if entity_id in local_states.keys() and local_states[entity_id] != None:
+    return local_states[entity_id]
+  return states[entity_id]
+
+def get_opposite_state(state):
+  return "on" if state == "off" else "off"
+
+def get_bg(entity_id):
+  state = resolve_state(entity_id)
+  return "green" if state == "on" else "gray"
+
+def get_activebg(entity_id):
+  state = resolve_state(entity_id)
+  return "green" if state == "on" else "gray"
+
+def switch(area_id):
+  new_state = get_opposite_state(states["light.{area_id}".format(area_id=area_id)])
+  switch_area(area_id, "{new_state}".format(new_state=new_state))
+  local_states["light.{area_id}".format(area_id=area_id)] = new_state
+  window.after(10000, lambda: clear_local("light.{area_id}".format(area_id=area_id)))
+
+main_frame = Frame(window)
+main_frame.pack(fill=BOTH, expand=True)
+
+left_frame = Frame(main_frame)
+left_frame.pack(side=LEFT, fill=BOTH, expand=True)
+right_frame = Frame(main_frame)
+right_frame.pack(side=RIGHT, fill=BOTH, expand=True)
+
+buttons = {}
+
+def make_button(frame, text, area_id):
+  buttons["light.{area_id}".format(area_id=area_id)] = Button(
+    frame, 
+    text=text, 
+    command=lambda: switch(area_id), 
+    bg=get_bg("light.{area_id}".format(area_id=area_id)), 
+    activebackground=get_activebg("light.{area_id}".format(area_id=area_id)), 
+    font=font)
+  buttons["light.{area_id}".format(area_id=area_id)].pack(fill=BOTH, expand=True)
+
+make_button(left_frame, "Living room", "living_room")
+make_button(left_frame, "Kitchen", "kitchen")
+make_button(right_frame, "Bedroom", "bedroom")
+make_button(right_frame, "Hallway", "hallway")
+
+def update_colors():
+  for entity_id in states.keys():
+    buttons[entity_id].configure(bg=get_bg(entity_id), activebackground=get_activebg(entity_id))
+  window.after(50, update_colors)
+
+update_colors()
+
+def update_states():
+  global states
+  states = get_states(states.keys())
+  print(states)
+  window.after(1000, update_states)
+
+update_states()
 
 window.mainloop()
