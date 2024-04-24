@@ -14,6 +14,7 @@ window.attributes('-fullscreen', True)
 window.config(cursor="none")
 window.title("Home UI")
 window.geometry("480x320")
+window.maxsize(480, 320)
 
 states = {
   "light.living_room": "off", 
@@ -50,16 +51,16 @@ def switch(area_id):
   window.after(10000, lambda: clear_local("light.{area_id}".format(area_id=area_id)))
 
 main_frame = Frame(window)
-main_frame.pack(fill=BOTH, expand=True)
+main_frame.place(relx=0, rely=0, relwidth=1, relheight=1)
 
 left_frame = Frame(main_frame)
-left_frame.pack(side=LEFT, fill=BOTH, expand=True)
+left_frame.place(relx=0, rely=0, relwidth=0.5, relheight=1)
 right_frame = Frame(main_frame)
-right_frame.pack(side=RIGHT, fill=BOTH, expand=True)
+right_frame.place(relx=0.5, rely=0, relwidth=0.5, relheight=1)
 
 buttons = {}
 
-def make_button(frame, text, area_id):
+def make_button(frame, rely, text, area_id):
   buttons["light.{area_id}".format(area_id=area_id)] = Button(
     frame, 
     text=text, 
@@ -67,12 +68,17 @@ def make_button(frame, text, area_id):
     bg=get_bg("light.{area_id}".format(area_id=area_id)), 
     activebackground=get_activebg("light.{area_id}".format(area_id=area_id)), 
     font=font)
-  buttons["light.{area_id}".format(area_id=area_id)].pack(fill=BOTH, expand=True)
+  buttons["light.{area_id}".format(area_id=area_id)].place(
+    relx=0.5, 
+    rely=rely, 
+    relwidth=1,
+    relheight=0.5,
+    anchor="n")
 
-make_button(left_frame, "Living room", "living_room")
-make_button(left_frame, "Kitchen", "kitchen")
-make_button(right_frame, "Bedroom", "bedroom")
-make_button(right_frame, "Hallway", "hallway")
+make_button(left_frame, 0, "Living room", "living_room")
+make_button(left_frame, 0.5, "Kitchen", "kitchen")
+make_button(right_frame, 0, "Bedroom", "bedroom")
+make_button(right_frame, 0.5, "Hallway", "hallway")
 
 def update_colors():
   for entity_id in states.keys():
