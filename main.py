@@ -48,7 +48,7 @@ def switch(area_id):
   new_state = get_opposite_state(states["light.{area_id}".format(area_id=area_id)])
   switch_area(area_id, "{new_state}".format(new_state=new_state))
   local_states["light.{area_id}".format(area_id=area_id)] = new_state
-  window.after(10000, lambda: clear_local("light.{area_id}".format(area_id=area_id)))
+  window.after(5000, lambda: clear_local("light.{area_id}".format(area_id=area_id)))
 
 main_frame = Frame(window)
 main_frame.place(relx=0, rely=0, relwidth=1, relheight=1)
