@@ -76,9 +76,9 @@ def make_button(frame, rely, text, area_id):
     anchor="n")
 
 make_button(left_frame, 0, "Living room", "living_room")
-make_button(left_frame, 0.5, "Kitchen", "kitchen")
+make_button(left_frame, 0.5, "Hallway", "hallway")
 make_button(right_frame, 0, "Bedroom", "bedroom")
-make_button(right_frame, 0.5, "Hallway", "hallway")
+make_button(right_frame, 0.5, "Kitchen", "kitchen")
 
 def update_colors():
   for entity_id in states.keys():
