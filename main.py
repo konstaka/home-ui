@@ -8,7 +8,7 @@ if os.environ.get('DISPLAY','') == '':
 
 window = Tk()
 
-font = tkFont.Font(family="Tahoma", size=18, weight=tkFont.BOLD, slant=tkFont.ITALIC)
+font = tkFont.Font(family="Courier New", size=20)
 
 window.attributes('-fullscreen', True)
 window.config(cursor="none")
@@ -38,11 +38,11 @@ def get_opposite_state(state):
 
 def get_bg(entity_id):
   state = resolve_state(entity_id)
-  return "green" if state == "on" else "gray"
+  return "#41FF00" if state == "on" else "gray1"
 
 def get_activebg(entity_id):
   state = resolve_state(entity_id)
-  return "green" if state == "on" else "gray"
+  return "#41FF00" if state == "on" else "gray1"
 
 def switch(area_id):
   new_state = get_opposite_state(states["light.{area_id}".format(area_id=area_id)])
@@ -61,24 +61,33 @@ right_frame.place(relx=0.5, rely=0, relwidth=0.5, relheight=1)
 buttons = {}
 
 def make_button(frame, rely, text, area_id):
-  buttons["light.{area_id}".format(area_id=area_id)] = Button(
+  Label(
     frame, 
     text=text, 
+    fg="#41FF00", 
+    font=font).place(
+    relx=0.5,
+    rely=rely-0.2,
+    anchor="n"
+  )
+  buttons["light.{area_id}".format(area_id=area_id)] = Button(
+    frame, 
     command=lambda: switch(area_id), 
     bg=get_bg("light.{area_id}".format(area_id=area_id)), 
-    activebackground=get_activebg("light.{area_id}".format(area_id=area_id)), 
-    font=font)
+    activebackground=get_activebg("light.{area_id}".format(area_id=area_id)),
+    relief="solid",
+    borderwidth="2")
   buttons["light.{area_id}".format(area_id=area_id)].place(
     relx=0.5, 
-    rely=rely, 
-    relwidth=1,
-    relheight=0.5,
+    rely=rely-0.08,
+    relwidth=0.5,
+    relheight=0.25,
     anchor="n")
 
-make_button(left_frame, 0, "Living room", "living_room")
-make_button(left_frame, 0.5, "Hallway", "hallway")
-make_button(right_frame, 0, "Bedroom", "bedroom")
-make_button(right_frame, 0.5, "Kitchen", "kitchen")
+make_button(left_frame, 0.25, "LIVING ROOM", "living_room")
+make_button(left_frame, 0.75, "HALLWAY", "hallway")
+make_button(right_frame, 0.25, "BEDROOM", "bedroom")
+make_button(right_frame, 0.75, "KITCHEN", "kitchen")
 
 def update_colors():
   for entity_id in states.keys():
