@@ -4,7 +4,7 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-host = "http://homeassistant.local:8123/api"
+host = "http://homeassistant.home:8123/api"
 token = os.environ.get("HASS_TOKEN")
 headers = {
     "Authorization": "Bearer {token}".format(token=token),

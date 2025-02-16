@@ -1,7 +1,7 @@
 #!/bin/bash -e
 
 USER=home
-HOST=homeassistant.local
+HOST=home-ui.home
 
 pip freeze > requirements.txt
 
