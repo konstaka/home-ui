@@ -1,7 +1,7 @@
 #!/bin/bash -e
 
 USER=home
-HOST=home-ui.home
+HOST=home-ui.local
 
 pip freeze > requirements.txt
 
