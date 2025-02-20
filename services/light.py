@@ -26,5 +26,5 @@ def get_states(entity_ids = []):
   return states
 
 def switch_area(area_id, state):
-  print("Switching area {area_id} to {state}".format(area_id=area_id, state=state))
+  print("Switching area {area_id} to {state}".format(area_id=area_id, state=state), flush=True)
   res = post("{host}/services/light/turn_{state}".format(host=host, state=state), headers=headers, json={"area_id": area_id})

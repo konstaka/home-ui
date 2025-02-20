@@ -3,7 +3,7 @@ import tkinter.font as tkFont
 from services.light import *
 
 if os.environ.get('DISPLAY','') == '':
-    print('no display found. Using :0.0')
+    print('no display found. Using :0.0', flush=True)
     os.environ.__setitem__('DISPLAY', ':0.0')
 
 window = Tk()
@@ -90,7 +90,7 @@ update_colors()
 def update_states():
   global states
   states = get_states(states.keys())
-  print(states)
+  print(states, flush=True)
   window.after(1000, update_states)
 
 update_states()
