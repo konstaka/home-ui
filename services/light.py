@@ -4,7 +4,7 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-host = "http://homeassistant.home:8123/api"
+url = os.environ.get("HASS_URL")
 token = os.environ.get("HASS_TOKEN")
 headers = {
     "Authorization": "Bearer {token}".format(token=token),
@@ -12,7 +12,10 @@ headers = {
 }
 
 def get_states(entity_ids = []):
-  res = get("{host}/states".format(host=host), headers=headers)
+  res = get(
+    "{host}/api/states".format(host=url), 
+    headers=headers
+  )
   states = {}
   for entity_id in entity_ids:
     states[entity_id] = "off"
@@ -26,5 +29,12 @@ def get_states(entity_ids = []):
   return states
 
 def switch_area(area_id, state):
-  print("Switching area {area_id} to {state}".format(area_id=area_id, state=state), flush=True)
-  res = post("{host}/services/light/turn_{state}".format(host=host, state=state), headers=headers, json={"area_id": area_id})
+  print(
+    "Switching area {area_id} to {state}".format(area_id=area_id, state=state),
+    flush=True
+  )
+  res = post(
+    "{host}/api/services/light/turn_{state}".format(host=url, state=state), 
+    headers=headers, 
+    json={"area_id": area_id}
+  )
