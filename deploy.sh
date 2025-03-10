@@ -1,5 +1,7 @@
 #!/bin/bash -e
 
+source .env
+
 while [[ $# -gt 0 ]]; do
     case $1 in
         -u|--user)
