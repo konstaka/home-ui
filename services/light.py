@@ -24,7 +24,7 @@ def get_states(entity_ids = []):
   states = {}
   for entity_id in entity_ids:
     states[entity_id] = ""
-    for new_state in res.json():
+    for new_state in resJson:
       # to infer based on individual light entity ids such as "hallway_fridge"
       # groups of ikea lights don't show up in the states as areas, but are still switchable.
       if entity_id in new_state["entity_id"]:
@@ -37,8 +37,11 @@ def switch_area(area_id, state):
     "Switching area {area_id} to {state}".format(area_id=area_id, state=state),
     flush=True
   )
-  res = post(
-    "{host}/api/services/light/turn_{state}".format(host=url, state=state), 
-    headers=headers, 
-    json={"area_id": area_id}
-  )
+  try:
+    res = post(
+      "{host}/api/services/light/turn_{state}".format(host=url, state=state), 
+      headers=headers, 
+      json={"area_id": area_id}
+    )
+  except exceptions.RequestException as e:
+    print(e)
