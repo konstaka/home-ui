@@ -38,11 +38,11 @@ def get_opposite_state(state):
 
 def get_bg(entity_id):
   state = resolve_state(entity_id)
-  return "green" if state == "on" else "gray"
-
-def get_activebg(entity_id):
-  state = resolve_state(entity_id)
-  return "green" if state == "on" else "gray"
+  if state == "on":
+    return "green"
+  if state == "off":
+    return "gray"
+  return "red"
 
 def switch(area_id):
   new_state = get_opposite_state(states["light.{area_id}".format(area_id=area_id)])
@@ -66,7 +66,7 @@ def make_button(frame, rely, text, area_id):
     text=text, 
     command=lambda: switch(area_id), 
     bg=get_bg("light.{area_id}".format(area_id=area_id)), 
-    activebackground=get_activebg("light.{area_id}".format(area_id=area_id)), 
+    activebackground=get_bg("light.{area_id}".format(area_id=area_id)), 
     font=font)
   buttons["light.{area_id}".format(area_id=area_id)].place(
     relx=0.5, 
@@ -82,7 +82,7 @@ make_button(right_frame, 0.5, "Kitchen", "kitchen")
 
 def update_colors():
   for entity_id in states.keys():
-    buttons[entity_id].configure(bg=get_bg(entity_id), activebackground=get_activebg(entity_id))
+    buttons[entity_id].configure(bg=get_bg(entity_id), activebackground=get_bg(entity_id))
   window.after(50, update_colors)
 
 update_colors()
