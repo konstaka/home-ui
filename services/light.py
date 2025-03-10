@@ -12,20 +12,24 @@ headers = {
 }
 
 def get_states(entity_ids = []):
-  res = get(
-    "{host}/api/states".format(host=url), 
-    headers=headers
-  )
+  resJson = []
+  try:
+    res = get(
+      "{host}/api/states".format(host=url), 
+      headers=headers
+    )
+    resJson = res.json()
+  except exceptions.RequestException as e:
+    print(e)
   states = {}
   for entity_id in entity_ids:
-    states[entity_id] = "off"
+    states[entity_id] = ""
     for new_state in res.json():
       # to infer based on individual light entity ids such as "hallway_fridge"
       # groups of ikea lights don't show up in the states as areas, but are still switchable.
       if entity_id in new_state["entity_id"]:
-        if new_state["state"] == "on":
-          states[entity_id] = "on"
-          break
+        states[entity_id] = new_state["state"]
+        break
   return states
 
 def switch_area(area_id, state):
