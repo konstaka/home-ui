@@ -16,11 +16,12 @@ def get_states(entity_ids = []):
   try:
     res = get(
       "{host}/api/states".format(host=url), 
-      headers=headers
+      headers=headers,
+      timeout=5
     )
     resJson = res.json()
   except exceptions.RequestException as e:
-    print(e)
+    print(e, flush=True)
   states = {}
   for entity_id in entity_ids:
     states[entity_id] = ""
@@ -41,7 +42,8 @@ def switch_area(area_id, state):
     res = post(
       "{host}/api/services/light/turn_{state}".format(host=url, state=state), 
       headers=headers, 
+      timeout=5,
       json={"area_id": area_id}
     )
   except exceptions.RequestException as e:
-    print(e)
+    print(e, flush=True)
